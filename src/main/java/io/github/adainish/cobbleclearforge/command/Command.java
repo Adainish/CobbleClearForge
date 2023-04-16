@@ -63,10 +63,10 @@ public class Command
                                         ResourceLocation location = ForgeRegistries.ITEMS.getKey(stack.getItem());
                                         if (location != null) {
                                             //check if items isn't already whitelisted
-                                            if (!CobbleClearForge.config.itemWhitelist.isWhiteListed(location.getNamespace())) {
+                                            if (!CobbleClearForge.config.itemWhitelist.isWhiteListed(location.toString())) {
                                                 //whitelist item
                                                 Config config = CobbleClearForge.config;
-                                                config.itemWhitelist.whitelistedItemIDs.add(location.getNamespace().toLowerCase());
+                                                config.itemWhitelist.whitelistedItemIDs.add(location.toString().toLowerCase());
                                                 Config.saveConfig(config);
                                                 Util.send(cc.getSource(), "&aWhitelisted the item.. Use the reload command to see the changes");
                                             } else {        // else throw exception

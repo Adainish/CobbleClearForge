@@ -91,7 +91,7 @@ public class PokemonWiper
                 });
                 for (PokemonEntity e:entityList) {
                     if (!whitelist.whitelistedPokemon.isEmpty()) {
-                        if (!whitelist.isWhiteListed(e)) {
+                        if (whitelist.isWhiteListed(e)) {
                             continue;
                         }
                     }

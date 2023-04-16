@@ -79,7 +79,7 @@ public class ItemWiper
                 });
                 for (ItemEntity e:itemEntityList) {
                     if (!whitelist.whitelistedItemIDs.isEmpty()) {
-                        if (!whitelist.isWhiteListed(e)) {
+                        if (whitelist.isWhiteListed(e)) {
                             continue;
                         }
                     }
