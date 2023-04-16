@@ -18,6 +18,15 @@ public class PokemonWhitelist
 
     }
 
+    public boolean isWhiteListed(String st)
+    {
+        for (String s:whitelistedPokemon) {
+            if (s.equalsIgnoreCase(st))
+                return true;
+        }
+        return false;
+    }
+
     public List<Species> getWhiteListedSpeciesList()
     {
         return whitelistedPokemon.stream().map(Util::getSpeciesFromString).filter(Objects::nonNull).collect(Collectors.toList());

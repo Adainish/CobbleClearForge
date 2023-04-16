@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 public class ItemWiper
 {
@@ -30,7 +29,7 @@ public class ItemWiper
         this.wipeTimerMinutes = CobbleClearForge.config.itemWipeTimerMinutes;         //pull timer from config
         this.lastWipe = 0;
         this.warningIntervals = CobbleClearForge.config.warningIntervalsSecondsItems;
-        this.task = Task.builder().infinite().execute(this::wipe).interval(20).build();
+        this.task = Task.builder().infinite().execute(this::attemptExecution).interval(20).build();
 
     }
 
@@ -65,7 +64,39 @@ public class ItemWiper
         return DurationFormatUtils.formatDurationWords(Duration.between(date1, zdt).toMillis(), true, true);
     }
 
-    public void wipe() {
+    public void wipe()
+    {
+        AtomicInteger wipedCount = new AtomicInteger();
+        List<ItemEntity> itemEntityList = new ArrayList<>();
+        for (ServerLevel w : CobbleClearForge.getServer().getAllLevels()) {
+            if (!w.isClientSide()) {
+
+                w.getAllEntities().forEach(entity -> {
+                    if (entity instanceof ItemEntity)
+                    {
+                        itemEntityList.add((ItemEntity) entity);
+                    }
+                });
+                for (ItemEntity e:itemEntityList) {
+                    if (!whitelist.whitelistedItemIDs.isEmpty()) {
+                        if (!whitelist.isWhiteListed(e)) {
+                            continue;
+                        }
+                    }
+                    e.kill();
+                    wipedCount.getAndIncrement();
+                }
+            }
+        }
+        this.lastWipe = System.currentTimeMillis();
+        int finalAmount = wipedCount.get();
+        //dobroadcast
+        String bc = CobbleClearForge.config.itemsWipedMessage;
+        bc = bc.replace("%amount%", String.valueOf(finalAmount));
+        Util.doBroadcast(bc);
+    }
+
+    public void attemptExecution() {
         // check if enough time passed for wipe
         if (shouldWarn())
         {
@@ -74,34 +105,7 @@ public class ItemWiper
             Util.doBroadcast(warning);
         }
         if (shouldWipe()) {
-            AtomicInteger wipedCount = new AtomicInteger();
-            List<ItemEntity> itemEntityList = new ArrayList<>();
-            for (ServerLevel w : CobbleClearForge.getServer().getAllLevels()) {
-                if (!w.isClientSide()) {
-
-                    w.getAllEntities().forEach(entity -> {
-                        if (entity instanceof ItemEntity)
-                        {
-                            itemEntityList.add((ItemEntity) entity);
-                        }
-                    });
-                    for (ItemEntity e:itemEntityList) {
-                        if (!whitelist.whitelistedItemIDs.isEmpty()) {
-                            if (!whitelist.isWhiteListed(e)) {
-                                continue;
-                            }
-                        }
-                        e.kill();
-                        wipedCount.getAndIncrement();
-                    }
-                }
-            }
-            this.lastWipe = System.currentTimeMillis();
-            int finalAmount = wipedCount.get();
-            //dobroadcast
-            String bc = CobbleClearForge.config.itemsWipedMessage;
-            bc = bc.replace("%amount%", String.valueOf(finalAmount));
-            Util.doBroadcast(bc);
+            wipe();
         }
     }
 }

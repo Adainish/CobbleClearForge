@@ -33,6 +33,35 @@ public class Config
 
     }
 
+    public static void saveConfig(Config config)
+    {
+        File dir = CobbleClearForge.getConfigDir();
+        dir.mkdirs();
+        File file = new File(dir, "config.json");
+        Gson gson = Adapters.PRETTY_MAIN_GSON;
+        JsonReader reader = null;
+        try {
+            reader = new JsonReader(new FileReader(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (reader == null) {
+            CobbleClearForge.getLog().error("Something went wrong attempting to read the Config");
+            return;
+        }
+
+
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write(gson.toJson(config));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void writeConfig()
     {
         File dir = CobbleClearForge.getConfigDir();

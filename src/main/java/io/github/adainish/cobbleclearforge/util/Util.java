@@ -3,6 +3,7 @@ package io.github.adainish.cobbleclearforge.util;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
 import io.github.adainish.cobbleclearforge.CobbleClearForge;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -15,6 +16,11 @@ public class Util
         return PokemonSpecies.INSTANCE.getImplemented();
     }
 
+
+    public static Species getNullableFromString(String species)
+    {
+        return PokemonSpecies.INSTANCE.getByIdentifier(ResourceLocation.of("cobblemon:%sp%".replace("%sp%", species), ':'));
+    }
     public static Species getSpeciesFromString(String species)
     {
         Species sp = PokemonSpecies.INSTANCE.getByIdentifier(ResourceLocation.of("cobblemon:%sp%".replace("%sp%", species), ':'));
@@ -48,6 +54,10 @@ public class Util
         speciesList.removeIf(sp -> !sp.create(1).isLegendary());
 
         return speciesList;
+    }
+
+    public static void send(CommandSourceStack sender, String message) {
+        sender.sendSystemMessage(Component.literal(((TextUtil.getMessagePrefix()).getString() + message).replaceAll("&([0-9a-fk-or])", "\u00a7$1")));
     }
 
     public static void doBroadcast(String message) {

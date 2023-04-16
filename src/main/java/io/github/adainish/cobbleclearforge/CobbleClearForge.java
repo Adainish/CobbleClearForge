@@ -1,10 +1,12 @@
 package io.github.adainish.cobbleclearforge;
 
+import io.github.adainish.cobbleclearforge.command.Command;
 import io.github.adainish.cobbleclearforge.config.Config;
 import io.github.adainish.cobbleclearforge.manager.WipeManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -35,6 +37,7 @@ public class CobbleClearForge {
     public static final String MODID = "cobbleclearforge";
     // Directly reference a slf4j logger
 
+    public static CobbleClearForge instance;
     public static final String MOD_NAME = "CobblemonClear";
     public static final String VERSION = "1.0.0-Beta";
     public static final String AUTHORS = "Winglet";
@@ -76,6 +79,7 @@ public class CobbleClearForge {
 
 
     public CobbleClearForge() {
+        instance = this;
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register the commonSetup method for modloading
@@ -94,6 +98,14 @@ public class CobbleClearForge {
                 .replace("%y", YEAR)
         );
         initDirs();
+
+    }
+
+    @SubscribeEvent
+    public void onCommandRegistry(RegisterCommandsEvent event) {
+
+        //register commands
+        event.getDispatcher().register(Command.getCommand());
 
     }
 

@@ -35,7 +35,7 @@ public class PokemonWiper
         //pull timer from config
         this.wipeTimerMinutes = CobbleClearForge.config.itemWipeTimerMinutes;
         this.warningIntervals = CobbleClearForge.config.warningIntervalsSecondsPokemon;
-        this.task = Task.builder().infinite().execute(this::wipe).interval(20).build();
+        this.task = Task.builder().infinite().execute(this::attemptExecution).interval(20).build();
     }
 
     public void shutdown()
@@ -74,6 +74,42 @@ public class PokemonWiper
 
     public void wipe()
     {
+        AtomicInteger wipedCount = new AtomicInteger();
+        for (ServerLevel w: CobbleClearForge.getServer().getAllLevels()) {
+            List<PokemonEntity> entityList = new ArrayList<>();
+            if (!w.isClientSide()) {
+
+                w.getAllEntities().forEach(entity -> {
+                    if (entity instanceof PokemonEntity)
+                    {
+                        if (((PokemonEntity) entity).getOwner() != null)
+                            return;
+                        if (((PokemonEntity) entity).getPokemon().getShiny())
+                            return;
+                        entityList.add((PokemonEntity) entity);
+                    }
+                });
+                for (PokemonEntity e:entityList) {
+                    if (!whitelist.whitelistedPokemon.isEmpty()) {
+                        if (!whitelist.isWhiteListed(e)) {
+                            continue;
+                        }
+                    }
+                    e.kill();
+                    wipedCount.getAndIncrement();
+                }
+            }
+        }
+        lastWipe = System.currentTimeMillis();
+        int finalAmount = wipedCount.get();
+        //do broadcast
+        String bc = CobbleClearForge.config.pokemonsWipedMessage;
+        bc = bc.replace("%amount%", String.valueOf(finalAmount));
+        Util.doBroadcast(bc);
+    }
+
+    public void attemptExecution()
+    {
         if (shouldWarn())
         {
             String warning = CobbleClearForge.config.pokemonWarningMessage;
@@ -83,38 +119,7 @@ public class PokemonWiper
         // check if enough time passed for wipe
         if (shouldWipe())
         {
-            AtomicInteger wipedCount = new AtomicInteger();
-            for (ServerLevel w: CobbleClearForge.getServer().getAllLevels()) {
-                List<PokemonEntity> entityList = new ArrayList<>();
-                if (!w.isClientSide()) {
-
-                    w.getAllEntities().forEach(entity -> {
-                        if (entity instanceof PokemonEntity)
-                        {
-                            if (((PokemonEntity) entity).getOwner() != null)
-                                return;
-                            if (((PokemonEntity) entity).getPokemon().getShiny())
-                                return;
-                            entityList.add((PokemonEntity) entity);
-                        }
-                    });
-                    for (PokemonEntity e:entityList) {
-                        if (!whitelist.whitelistedPokemon.isEmpty()) {
-                            if (!whitelist.isWhiteListed(e)) {
-                                continue;
-                            }
-                        }
-                        e.kill();
-                        wipedCount.getAndIncrement();
-                    }
-                }
-            }
-            lastWipe = System.currentTimeMillis();
-            int finalAmount = wipedCount.get();
-            //do broadcast
-            String bc = CobbleClearForge.config.pokemonsWipedMessage;
-            bc = bc.replace("%amount%", String.valueOf(finalAmount));
-            Util.doBroadcast(bc);
+            wipe();
         }
     }
 }
