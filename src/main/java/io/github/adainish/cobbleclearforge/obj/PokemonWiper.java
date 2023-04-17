@@ -33,7 +33,7 @@ public class PokemonWiper
         //pull whitelist from config
         this.whitelist = CobbleClearForge.config.pokemonWhitelist;
         //pull timer from config
-        this.wipeTimerMinutes = CobbleClearForge.config.itemWipeTimerMinutes;
+        this.wipeTimerMinutes = CobbleClearForge.config.pokemonWipeTimerMinutes;
         this.warningIntervals = CobbleClearForge.config.warningIntervalsSecondsPokemon;
         this.task = Task.builder().infinite().execute(this::attemptExecution).interval(20).build();
     }
