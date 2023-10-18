@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import io.github.adainish.cobbleclearforge.CobbleClearForge;
 import io.github.adainish.cobbleclearforge.util.Util;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 
@@ -95,7 +96,7 @@ public class PokemonWiper
                             continue;
                         }
                     }
-                    e.kill();
+                    e.remove(Entity.RemovalReason.DISCARDED);
                     wipedCount.getAndIncrement();
                 }
             }
