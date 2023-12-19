@@ -81,24 +81,22 @@ public class PokemonWiper
             if (!w.isClientSide()) {
 
                 w.getAllEntities().forEach(entity -> {
-                    if (entity instanceof PokemonEntity)
+                    if (entity instanceof PokemonEntity pokemonEntity)
                     {
-                        if (((PokemonEntity) entity).getOwner() != null)
+                        if (pokemonEntity.getOwner() != null || pokemonEntity.getPokemon().getShiny() || pokemonEntity.isBattling() || pokemonEntity.isBusy())
                             return;
-                        if (((PokemonEntity) entity).getPokemon().getShiny())
-                            return;
-                        entityList.add((PokemonEntity) entity);
+                        entityList.add(pokemonEntity);
                     }
                 });
-                for (PokemonEntity e:entityList) {
+                entityList.forEach(e -> {
                     if (!whitelist.whitelistedPokemon.isEmpty()) {
                         if (whitelist.isWhiteListed(e)) {
-                            continue;
+                            return;
                         }
                     }
                     e.remove(Entity.RemovalReason.DISCARDED);
                     wipedCount.getAndIncrement();
-                }
+                });
             }
         }
         lastWipe = System.currentTimeMillis();
