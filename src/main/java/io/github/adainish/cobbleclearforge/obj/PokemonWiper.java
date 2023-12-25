@@ -4,6 +4,9 @@ import ca.landonjw.gooeylibs2.api.tasks.Task;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import io.github.adainish.cobbleclearforge.CobbleClearForge;
 import io.github.adainish.cobbleclearforge.util.Util;
+import io.github.adainish.cobbledoutbreaksforge.CobbledOutBreaksForge;
+import io.github.adainish.cobbledoutbreaksforge.obj.OutBreak;
+import io.github.adainish.cobbledoutbreaksforge.obj.OutbreaksManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -83,6 +86,15 @@ public class PokemonWiper
                 w.getAllEntities().forEach(entity -> {
                     if (entity instanceof PokemonEntity pokemonEntity)
                     {
+                        try {
+                            //don't remove pokemon if it's part of an outbreak
+                            if (CobbledOutBreaksForge.outbreaksManager.outBreakHashMap.values().stream().filter(outbreak -> !outbreak.expired()).filter(outbreak -> outbreak.getOptionalSpeciesFromID().isPresent()).anyMatch(outbreak -> pokemonEntity.getPokemon().getSpecies().equals(outbreak.getOptionalSpeciesFromID().get()))) {
+                                return;
+                            }
+                        } catch (NoClassDefFoundError e)
+                        {
+                            //ignore, as this means the outbreak mod isn't installed
+                        }
                         if (pokemonEntity.getOwner() != null || pokemonEntity.getPokemon().getShiny() || pokemonEntity.isBattling() || pokemonEntity.isBusy())
                             return;
                         entityList.add(pokemonEntity);
