@@ -2,7 +2,7 @@ package io.github.adainish.cobbleclearforge.config;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import io.github.adainish.cobbleclearforge.CobbleClearForge;
+import io.github.adainish.cobbleclearforge.CobbleClear;
 import io.github.adainish.cobbleclearforge.obj.ItemWhitelist;
 import io.github.adainish.cobbleclearforge.obj.PokemonWhitelist;
 import io.github.adainish.cobbleclearforge.util.Adapters;
@@ -35,7 +35,7 @@ public class Config
 
     public static void saveConfig(Config config)
     {
-        File dir = CobbleClearForge.getConfigDir();
+        File dir = CobbleClear.getConfigDir();
         dir.mkdirs();
         File file = new File(dir, "config.json");
         Gson gson = Adapters.PRETTY_MAIN_GSON;
@@ -47,7 +47,7 @@ public class Config
         }
 
         if (reader == null) {
-            CobbleClearForge.getLog().error("Something went wrong attempting to read the Config");
+            CobbleClear.getLog().error("Something went wrong attempting to read the Config");
             return;
         }
 
@@ -64,7 +64,7 @@ public class Config
 
     public static void writeConfig()
     {
-        File dir = CobbleClearForge.getConfigDir();
+        File dir = CobbleClear.getConfigDir();
         dir.mkdirs();
         Gson gson  = Adapters.PRETTY_MAIN_GSON;
         Config config = new Config();
@@ -79,13 +79,13 @@ public class Config
             writer.close();
         } catch (IOException e)
         {
-            CobbleClearForge.getLog().warn(e);
+            CobbleClear.getLog().warn(e);
         }
     }
 
     public static Config getConfig()
     {
-        File dir = CobbleClearForge.getConfigDir();
+        File dir = CobbleClear.getConfigDir();
         dir.mkdirs();
         Gson gson  = Adapters.PRETTY_MAIN_GSON;
         File file = new File(dir, "config.json");
@@ -93,7 +93,7 @@ public class Config
         try {
             reader = new JsonReader(new FileReader(file));
         } catch (FileNotFoundException e) {
-            CobbleClearForge.getLog().error("Something went wrong attempting to read the Config");
+            CobbleClear.getLog().error("Something went wrong attempting to read the Config");
             return null;
         }
 

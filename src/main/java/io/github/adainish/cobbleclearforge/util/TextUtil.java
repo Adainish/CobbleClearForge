@@ -1,6 +1,6 @@
 package io.github.adainish.cobbleclearforge.util;
 
-import io.github.adainish.cobbleclearforge.CobbleClearForge;
+import io.github.adainish.cobbleclearforge.CobbleClear;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -40,9 +40,9 @@ public class TextUtil
 
     public static final TextColor BLUE = TextColor.parseColor("#00AFFC");
     public static final TextColor ORANGE = TextColor.parseColor("#FF6700");
-    private static final MutableComponent PLUGIN_PREFIX = Component.literal(Util.formattedString(CobbleClearForge.languageConfig.prefix)).setStyle(Style.EMPTY.withColor(BLUE));
+    private static final MutableComponent PLUGIN_PREFIX = Component.literal(Util.formattedString(CobbleClear.languageConfig.prefix)).setStyle(Style.EMPTY.withColor(BLUE));
 
-    private static final MutableComponent MESSAGE_PREFIX = getPluginPrefix().append(Component.literal(CobbleClearForge.languageConfig.splitter).setStyle(Style.EMPTY.withColor(ORANGE)));
+    private static final MutableComponent MESSAGE_PREFIX = getPluginPrefix().append(Component.literal(CobbleClear.languageConfig.splitter).setStyle(Style.EMPTY.withColor(ORANGE)));
 
     /**
      * @return a copy of the coloured CobbleClear TextComponent

@@ -1,12 +1,13 @@
 package io.github.adainish.cobbleclearforge.obj;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ItemWhitelist
 {
@@ -16,10 +17,10 @@ public class ItemWhitelist
     public ItemWhitelist()
     {}
 
-    public static Item getItemFromString(String id)
+    public static Optional<Item> getItemFromString(String id)
     {
         ResourceLocation location = new ResourceLocation(id);
-        return ForgeRegistries.ITEMS.getValue(location);
+        return BuiltInRegistries.ITEM.getOptional(location);
     }
 
     public List<Item> convertedWhiteListedItems()
@@ -27,9 +28,8 @@ public class ItemWhitelist
         List<Item> items = new ArrayList<>();
         for (String s : whitelistedItemIDs) {
             //pull item from registry and add to whitelist
-            Item item = getItemFromString(s);
-            if (item != null)
-                items.add(item);
+            if (getItemFromString(s).isPresent())
+                items.add(getItemFromString(s).get());
         }
         return items;
     }

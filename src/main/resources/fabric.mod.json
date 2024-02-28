@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "cobbleclear",
+  "version": "${version}",
+  "name": "CobbleClear",
+  "description": "Easily wipe pokemon and item entities on a timer, with blacklist and whitelist support",
+  "authors": [
+    "Winglet"
+  ],
+  "contact": {
+    "repo": "https://github.com/adainish/CobbleClearForge"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/cabled/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "io.github.adainish.cobbleclearforge.CobbleClear"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

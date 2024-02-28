@@ -1,7 +1,7 @@
 package io.github.adainish.cobbleclearforge.obj;
 
 import ca.landonjw.gooeylibs2.api.tasks.Task;
-import io.github.adainish.cobbleclearforge.CobbleClearForge;
+import io.github.adainish.cobbleclearforge.CobbleClear;
 import io.github.adainish.cobbleclearforge.util.Util;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -26,10 +26,10 @@ public class ItemWiper
     public List<Integer> warningIntervals;
 
     public void init() {
-        this.whitelist = CobbleClearForge.config.itemWhitelist;         //pull whitelist from config
-        this.wipeTimerMinutes = CobbleClearForge.config.itemWipeTimerMinutes;         //pull timer from config
+        this.whitelist = CobbleClear.config.itemWhitelist;         //pull whitelist from config
+        this.wipeTimerMinutes = CobbleClear.config.itemWipeTimerMinutes;         //pull timer from config
         this.lastWipe = 0;
-        this.warningIntervals = CobbleClearForge.config.warningIntervalsSecondsItems;
+        this.warningIntervals = CobbleClear.config.warningIntervalsSecondsItems;
         this.task = Task.builder().infinite().execute(this::attemptExecution).interval(20).build();
 
     }
@@ -69,7 +69,7 @@ public class ItemWiper
     {
         AtomicInteger wipedCount = new AtomicInteger();
         List<ItemEntity> itemEntityList = new ArrayList<>();
-        for (ServerLevel w : CobbleClearForge.getServer().getAllLevels()) {
+        for (ServerLevel w : CobbleClear.getServer().getAllLevels()) {
             if (!w.isClientSide()) {
 
                 w.getAllEntities().forEach(entity -> {
@@ -92,7 +92,7 @@ public class ItemWiper
         this.lastWipe = System.currentTimeMillis();
         int finalAmount = wipedCount.get();
         //dobroadcast
-        String bc = CobbleClearForge.config.itemsWipedMessage;
+        String bc = CobbleClear.config.itemsWipedMessage;
         bc = bc.replace("%amount%", String.valueOf(finalAmount));
         Util.doBroadcast(bc);
     }
@@ -101,7 +101,7 @@ public class ItemWiper
         // check if enough time passed for wipe
         if (shouldWarn())
         {
-            String warning = CobbleClearForge.config.itemWarningMessage;
+            String warning = CobbleClear.config.itemWarningMessage;
             warning = warning.replace("%time%", timeTillWipe());
             Util.doBroadcast(warning);
         }

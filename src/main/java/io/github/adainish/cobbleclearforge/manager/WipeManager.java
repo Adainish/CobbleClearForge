@@ -1,6 +1,6 @@
 package io.github.adainish.cobbleclearforge.manager;
 
-import io.github.adainish.cobbleclearforge.CobbleClearForge;
+import io.github.adainish.cobbleclearforge.CobbleClear;
 import io.github.adainish.cobbleclearforge.obj.ItemWiper;
 import io.github.adainish.cobbleclearforge.obj.PokemonWiper;
 
@@ -16,7 +16,7 @@ public class WipeManager
 
     public void init()
     {
-        if (CobbleClearForge.config != null) {
+        if (CobbleClear.config != null) {
             if (this.itemWiper != null)
                 this.itemWiper.shutdown();
             if (this.pokemonWiper != null)
@@ -26,7 +26,7 @@ public class WipeManager
             this.itemWiper.init();
             this.pokemonWiper.init();
         } else {
-            CobbleClearForge.getLog().error("Failed to initialise Cobblemon Clear, the config failed to load or contained mismatched data");
+            CobbleClear.getLog().error("Failed to initialise Cobblemon Clear, the config failed to load or contained mismatched data");
         }
     }
 }

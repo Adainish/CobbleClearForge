@@ -2,11 +2,10 @@ package io.github.adainish.cobbleclearforge.obj;
 
 import ca.landonjw.gooeylibs2.api.tasks.Task;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import io.github.adainish.cobbleclearforge.CobbleClearForge;
+import io.github.adainish.cobbleclearforge.CobbleClear;
 import io.github.adainish.cobbleclearforge.util.Util;
-import io.github.adainish.cobbledoutbreaksforge.CobbledOutBreaksForge;
+import io.github.adainish.cobbledoutbreaksforge.CobbledOutBreaks;
 import io.github.adainish.cobbledoutbreaksforge.obj.OutBreak;
-import io.github.adainish.cobbledoutbreaksforge.obj.OutbreaksManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -35,10 +34,10 @@ public class PokemonWiper
         this.lastWipe = System.currentTimeMillis();
 
         //pull whitelist from config
-        this.whitelist = CobbleClearForge.config.pokemonWhitelist;
+        this.whitelist = CobbleClear.config.pokemonWhitelist;
         //pull timer from config
-        this.wipeTimerMinutes = CobbleClearForge.config.pokemonWipeTimerMinutes;
-        this.warningIntervals = CobbleClearForge.config.warningIntervalsSecondsPokemon;
+        this.wipeTimerMinutes = CobbleClear.config.pokemonWipeTimerMinutes;
+        this.warningIntervals = CobbleClear.config.warningIntervalsSecondsPokemon;
         this.task = Task.builder().infinite().execute(this::attemptExecution).interval(20).build();
     }
 
@@ -79,7 +78,7 @@ public class PokemonWiper
     public void wipe()
     {
         AtomicInteger wipedCount = new AtomicInteger();
-        for (ServerLevel w: CobbleClearForge.getServer().getAllLevels()) {
+        for (ServerLevel w: CobbleClear.getServer().getAllLevels()) {
             List<PokemonEntity> entityList = new ArrayList<>();
             if (!w.isClientSide()) {
 
@@ -88,7 +87,7 @@ public class PokemonWiper
                     {
                         try {
                             //don't remove pokemon if it's part of an outbreak
-                            if (CobbledOutBreaksForge.outbreaksManager.outBreakHashMap.values().stream().filter(outbreak -> !outbreak.expired()).filter(outbreak -> outbreak.getOptionalSpeciesFromID().isPresent()).anyMatch(outbreak -> pokemonEntity.getPokemon().getSpecies().equals(outbreak.getOptionalSpeciesFromID().get()))) {
+                            if (CobbledOutBreaks.outbreaksManager.outBreakHashMap.values().stream().filter(outbreak -> !outbreak.expired()).anyMatch(outbreak -> !pokemonEntity.getPokemon().getPersistentData().isEmpty() && pokemonEntity.getPokemon().getPersistentData().getBoolean("outbreakmon"))) {
                                 return;
                             }
                         } catch (NoClassDefFoundError e)
@@ -114,7 +113,7 @@ public class PokemonWiper
         lastWipe = System.currentTimeMillis();
         int finalAmount = wipedCount.get();
         //do broadcast
-        String bc = CobbleClearForge.config.pokemonsWipedMessage;
+        String bc = CobbleClear.config.pokemonsWipedMessage;
         bc = bc.replace("%amount%", String.valueOf(finalAmount));
         Util.doBroadcast(bc);
     }
@@ -123,7 +122,7 @@ public class PokemonWiper
     {
         if (shouldWarn())
         {
-            String warning = CobbleClearForge.config.pokemonWarningMessage;
+            String warning = CobbleClear.config.pokemonWarningMessage;
             warning = warning.replace("%time%", timeTillWipe());
             Util.doBroadcast(warning);
         }

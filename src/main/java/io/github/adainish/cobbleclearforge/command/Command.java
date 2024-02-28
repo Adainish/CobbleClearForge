@@ -2,16 +2,16 @@ package io.github.adainish.cobbleclearforge.command;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.adainish.cobbleclearforge.CobbleClearForge;
+import io.github.adainish.cobbleclearforge.CobbleClear;
 import io.github.adainish.cobbleclearforge.config.Config;
 import io.github.adainish.cobbleclearforge.util.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class Command
 {
@@ -26,7 +26,7 @@ public class Command
                 .then(Commands.literal("reload")
                         .executes(cc -> {
                             //do reload
-                            CobbleClearForge.instance.reload();
+                            CobbleClear.instance.reload();
                             Util.send(cc.getSource(), "&cReloaded the mod");
                             return 1;
                         })
@@ -35,14 +35,14 @@ public class Command
                         .executes(cc -> {
                             //forcefully clear items
                             Util.send(cc.getSource(), "&aForcefully wiped items");
-                            CobbleClearForge.manager.itemWiper.wipe();
+                            CobbleClear.manager.itemWiper.wipe();
                             return 1;
                         })
                 )
                 .then(Commands.literal("pokemon")
                         .executes(cc -> {
                             Util.send(cc.getSource(), "&aForcefully wiped pokemon");
-                            CobbleClearForge.manager.pokemonWiper.wipe();
+                            CobbleClear.manager.pokemonWiper.wipe();
                             return 1;
                         })
                 )
@@ -60,12 +60,12 @@ public class Command
                                         {
                                             throw new Exception("No item in hand");
                                         }
-                                        ResourceLocation location = ForgeRegistries.ITEMS.getKey(stack.getItem());
-                                        if (location != null) {
+                                        ResourceLocation location = BuiltInRegistries.ITEM.getKey(stack.getItem());
+                                        if (!location.toString().isBlank() && !location.toString().isEmpty()) {
                                             //check if items isn't already whitelisted
-                                            if (!CobbleClearForge.config.itemWhitelist.isWhiteListed(location.toString())) {
+                                            if (!CobbleClear.config.itemWhitelist.isWhiteListed(location.toString())) {
                                                 //whitelist item
-                                                Config config = CobbleClearForge.config;
+                                                Config config = CobbleClear.config;
                                                 config.itemWhitelist.whitelistedItemIDs.add(location.toString().toLowerCase());
                                                 Config.saveConfig(config);
                                                 Util.send(cc.getSource(), "&aWhitelisted the item.. Use the reload command to see the changes");
@@ -95,9 +95,9 @@ public class Command
                                             //check valid species
                                             if (Util.getNullableFromString(speciesName) != null)
                                             {
-                                                if (!CobbleClearForge.config.pokemonWhitelist.isWhiteListed(speciesName))
+                                                if (!CobbleClear.config.pokemonWhitelist.isWhiteListed(speciesName))
                                                 {
-                                                    Config config = CobbleClearForge.config;
+                                                    Config config = CobbleClear.config;
                                                     config.pokemonWhitelist.whitelistedPokemon.add(speciesName.toLowerCase());
                                                     Config.saveConfig(config);
                                                     Util.send(cc.getSource(), "&aWhitelisted the pokemon.. Use the reload command to see the changes");

@@ -2,7 +2,7 @@ package io.github.adainish.cobbleclearforge.util;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
-import io.github.adainish.cobbleclearforge.CobbleClearForge;
+import io.github.adainish.cobbleclearforge.CobbleClear;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -61,7 +61,7 @@ public class Util
     }
 
     public static void doBroadcast(String message) {
-        CobbleClearForge.getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> {
+        CobbleClear.getServer().getPlayerList().getPlayers().forEach(serverPlayerEntity -> {
             serverPlayerEntity.sendSystemMessage(Component.literal(TextUtil.getMessagePrefix().getString() + formattedString(message)));
         });
     }

@@ -2,7 +2,7 @@ package io.github.adainish.cobbleclearforge.config;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import io.github.adainish.cobbleclearforge.CobbleClearForge;
+import io.github.adainish.cobbleclearforge.CobbleClear;
 import io.github.adainish.cobbleclearforge.util.Adapters;
 
 import java.io.*;
@@ -14,7 +14,7 @@ public class LanguageConfig
 
     public static void writeConfig()
     {
-        File dir = CobbleClearForge.getConfigDir();
+        File dir = CobbleClear.getConfigDir();
         dir.mkdirs();
         Gson gson  = Adapters.PRETTY_MAIN_GSON;
         LanguageConfig config = new LanguageConfig();
@@ -29,13 +29,13 @@ public class LanguageConfig
             writer.close();
         } catch (IOException e)
         {
-            CobbleClearForge.getLog().warn(e);
+            CobbleClear.getLog().warn(e);
         }
     }
 
     public static LanguageConfig getConfig()
     {
-        File dir = CobbleClearForge.getConfigDir();
+        File dir = CobbleClear.getConfigDir();
         dir.mkdirs();
         Gson gson  = Adapters.PRETTY_MAIN_GSON;
         File file = new File(dir, "language.json");
@@ -43,7 +43,7 @@ public class LanguageConfig
         try {
             reader = new JsonReader(new FileReader(file));
         } catch (FileNotFoundException e) {
-            CobbleClearForge.getLog().error("Something went wrong attempting to read the Config");
+            CobbleClear.getLog().error("Something went wrong attempting to read the Config");
             return null;
         }
 
